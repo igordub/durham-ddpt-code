@@ -354,7 +354,7 @@ SUBROUTINE DIAGSTD(ndim,nvecout,covar,mat,fidet)
      DO i=1,nord
         DO j=i,nord
            IF (amat(i,j).ne.0) THEN
-              WRITE(7354,'(2I10,1PG20.12)'), i, j, amat(i,j)
+              WRITE(7354,'(2I10,1PG20.12)') i, j, amat(i,j)
            END IF
         END DO
      END DO 
