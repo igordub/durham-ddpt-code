@@ -1,0 +1,19 @@
+This folder contains some useful VMD plugins.
+
+bfactor is a very simple tcl script that just scales the Bfactor in
+VMD by a user inputed value and allows display.
+
+connectivity is a tcl script called from VMD which plots the residue
+connectivity within a given cutoff onto the structure. It also contains
+a function to calculate the whole molecule mass.
+
+hingefind is a slightly modified version of the code written by
+Willy Wriggers 
+(http://www.netsci.org/Resources/Software/Modeling/Biop/hingefind.html)
+which I like and is a useful tool if looking for large domain blocks
+for use with the DIAGRTB program in this toolbox.
+
+nmwiz0.2 is an early version of nmwiz 
+(http://www.csb.pitt.edu/ProDy/plugins/index.html) which I
+know works with the NMWIZWT program in this toolbox.
+

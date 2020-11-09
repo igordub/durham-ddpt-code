@@ -1,0 +1,171 @@
+##########################################################################
+#                                                                        #
+#          makefile to produce the DU Protein Toolbox                    #
+#									 #
+# Instructions:								 #
+#	make                                                     	 #
+#	make install							 #
+#                                                                        #
+##########################################################################
+
+COMPILER=@FC@
+SUFFIX=@suf@
+PREFIX=@pre@
+INS=@prefix@
+
+##########################################################################
+##########################################################################
+
+
+makefull:	ENM diagstd diagrtb GNM freq nmwiz cross_cor rms overlap \
+		GroAMED plotpdb covar fullca domains project \
+		eigen pdb_diff spacing movement trajpdb clean
+		@echo "Full Toolbox built"
+		@echo "Can be installed with make install"
+
+install:        
+		@mkdir -p ${INS}/DDPT
+		@cp ./bin/* ${INS}/DDPT/
+		@echo "Toolbox installed"
+		@echo "Make sure ${INS}/DDPT is in your path"
+
+ENM:            
+		@${COMPILER} ./sourcecode/types.f90 ./sourcecode/read_files.f90 \
+		./sourcecode/utils.f90 ./sourcecode/write_files.f90 \
+		./sourcecode/foul.f90 ./sourcecode/genENM.f90 \
+		-o ./bin/${PREFIX}GENENMM${SUFFIX}
+		@echo "Built G  E  N  E  N  M  M"
+
+diagstd:	
+		@${COMPILER} ./sourcecode/types.f90 ./sourcecode/utils.f90 \
+		./sourcecode/write_files.f90 ./sourcecode/diagstd.f90 \
+		-o ./bin/${PREFIX}DIAGSTD${SUFFIX}
+		@echo "Built D  I  A  G  S  T  D"
+
+diagrtb:	
+		@${COMPILER} ./sourcecode/types.f90 \
+		./sourcecode/read_files.f90 ./sourcecode/utils.f90 \
+		./sourcecode/write_files.f90 ./sourcecode/rtb_util.f90 \
+		./sourcecode/diagrtb.f90 \
+		-o ./bin/${PREFIX}DIAGRTB${SUFFIX}
+		@echo "Built D  I  A  G  R  T  B"
+
+GNM:            
+		@${COMPILER} ./sourcecode/types.f90 ./sourcecode/read_files.f90 \
+		./sourcecode/utils.f90 ./sourcecode/GNM.f90 \
+		-o ./bin/${PREFIX}GNMPROD${SUFFIX}
+		@echo "Built G  N  M  P  R  O  D"
+
+freq:      	
+		@${COMPILER} ./sourcecode/types.f90 ./sourcecode/read_files.f90 \
+		./sourcecode/frequency.f90 \
+		-o ./bin/${PREFIX}FREQEN${SUFFIX}
+		@echo "Built F  R  E  Q  /  E  N"
+
+nmwiz:		
+		@${COMPILER} ./sourcecode/types.f90 ./sourcecode/read_files.f90 \
+		./sourcecode/write_nmwiz.f90 \
+		-o ./bin/${PREFIX}NMWIZWT${SUFFIX}
+		@echo "Built N  M  W  I  Z  W  T"
+
+cross_cor:	
+		@${COMPILER} ./sourcecode/types.f90 ./sourcecode/read_files.f90 \
+		./sourcecode/cross_cor.f90 \
+		-o ./bin/${PREFIX}CROSCOR${SUFFIX}
+		@echo "Built C  R  O  S  C  O  R"
+
+rms:		
+		@${COMPILER} ./sourcecode/types.f90 ./sourcecode/read_files.f90 \
+		./sourcecode/utils.f90 ./sourcecode/rms.f90 -o \
+		./bin/${PREFIX}RMSCOL${SUFFIX}
+		@echo "Built R  M  S  /  C  O  L"
+
+overlap:	
+		@${COMPILER} ./sourcecode/types.f90 ./sourcecode/read_files.f90 \
+		./sourcecode/overlap.f90 -o \
+		./bin/${PREFIX}OVERLAP${SUFFIX}
+		@echo "Built O  V  E  R  L  A  P"
+
+GroAMED:		
+		@${COMPILER} ./sourcecode/GroAMED.f90 -o ./bin/${PREFIX}GROAMED${SUFFIX}
+		@echo "Built G  R  O  A  M  E  D"
+
+plotpdb:		
+		@${COMPILER} ./sourcecode/types.f90 ./sourcecode/read_files.f90 \
+		./sourcecode/write_files.f90 \
+		./sourcecode/plot_on_pdb.f90 \
+		-o ./bin/${PREFIX}PLOTPDB${SUFFIX}
+		@echo "Built P  L  O  T  P  D  B"
+
+covar:
+		@${COMPILER} ./sourcecode/types.f90 ./sourcecode/utils.f90 \
+		./sourcecode/trajutils.f90 ./sourcecode/read_files.f90 \
+		./sourcecode/write_files.f90 ./sourcecode/pbc_tools.f90 \
+		./sourcecode/read_pdbs.f90 ./sourcecode/covar.f90 \
+		-o ./bin/${PREFIX}COVAR${SUFFIX}
+		@echo "Built    C  O  V  A  R   "
+
+trajpdb:
+		@${COMPILER} ./sourcecode/types.f90 ./sourcecode/utils.f90 \
+		./sourcecode/trajutils.f90 ./sourcecode/read_files.f90 \
+		./sourcecode/write_files.f90 ./sourcecode/pbc_tools.f90 \
+		./sourcecode/traj_to_pdb.f90 \
+		-o ./bin/${PREFIX}TRAJPDB${SUFFIX}
+		@echo "Built T  R  A  J  P  D  B"
+
+eigen:		
+		@${COMPILER} ./sourcecode/types.f90 ./sourcecode/utils.f90 \
+		./sourcecode/trajutils.f90 ./sourcecode/read_files.f90 \
+		./sourcecode/pbc_tools.f90 \
+		./sourcecode/eigen_proj.f90 \
+		-o ./bin/${PREFIX}EGNPROJ${SUFFIX}
+		@echo "Built E  G  N  P  R  O  J "
+
+fullca:		
+		@${COMPILER} ./sourcecode/types.f90 ./sourcecode/read_files.f90 \
+		./sourcecode/write_files.f90 \
+		./sourcecode/full_to_ca.f90 \
+		-o ./bin/${PREFIX}FULL2CA${SUFFIX}
+		@echo "Built F  U  L  L  2  C  A"
+
+domains:		
+		@${COMPILER} ./sourcecode/types.f90 ./sourcecode/read_files.f90 \
+		./sourcecode/write_files.f90 ./sourcecode/utils.f90 \
+		./sourcecode/domains.f90 \
+		-o ./bin/${PREFIX}DOMAINS${SUFFIX}
+		@echo "Built D  O  M  A  I  N  S"
+
+project:	
+		@${COMPILER} ./sourcecode/types.f90 ./sourcecode/read_files.f90 \
+		./sourcecode/write_files.f90 \
+		./sourcecode/project_modes.f90 \
+		-o ./bin/${PREFIX}PROJECT${SUFFIX}
+		@echo "Built P  R  O  J  E  C  T"
+
+pdb_diff:	
+		@${COMPILER} ./sourcecode/types.f90 ./sourcecode/read_files.f90 \
+		./sourcecode/write_files.f90 \
+		./sourcecode/pdb_diff.f90 \
+		-o ./bin/${PREFIX}PDBDIFF${SUFFIX}
+		@echo "Built P  D  B  D  I  F  F"
+
+spacing:	
+		@${COMPILER} ./sourcecode/types.f90 ./sourcecode/read_files.f90 \
+		./sourcecode/spacing.f90 \
+		-o ./bin/${PREFIX}SPACING${SUFFIX}
+		@echo "Built S  P  A  C  I  N  G"
+
+movement:	
+		@${COMPILER} ./sourcecode/types.f90 ./sourcecode/read_files.f90 \
+		./sourcecode/utils.f90 ./sourcecode/movement.f90 \
+		-o ./bin/${PREFIX}MOVING${SUFFIX}
+		@echo "Built M  O  V  E  I  N  G"
+
+clean:
+		@rm -f *~ *.mod
+
+veryclean:	clean
+		@rm -fr bin
+
+##########################################################################
+#Tom Rodgers 28-09-2011

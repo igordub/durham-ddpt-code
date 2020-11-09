@@ -1,0 +1,752 @@
+DDPT
+
+Quick Install:
+
+1. ./configure 
+2. make
+3. make install (sudo if you have not selected a local path)
+4. Enjoy!
+
+
+This toolbox has been tested with:
+      gfortran > 4.4.1
+      ifort > 11.1
+
+
+Help:
+
+Help for all programs is available by using the -help tag 
+when running the program. These help messages are listed at 
+the end of this file.
+
+For problems with the code please contact thomas.rodgers(at)durham.ac.uk
+
+
+
+ DDPT: A Comprehensive Toolbox for the Analysis of Protein Motion
+ Copyright (C) Thomas Rodgers and David Burnell 2012
+
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 2 of the License, or
+   (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License along
+   with this program; if not, write to the Free Software Foundation, Inc.,
+   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+ Please note the use of Trajutils and Foul within this toolbox which hold 
+ their own GNU General Public Licenses. Please see trajutils.f90 and 
+ foul.f90 for these
+
+
+
+
+
+
+
+
+                           G  E  N  E  N  M  M                           
+                               VERSION 1.0                               
+                                                                         
+                               Written by:                               
+                      Tom Rodgers and David Burnell                      
+                                                                         
+This program produces the Hermitian matrix for a ENM based on the pdb    
+inputed with -pdb. A matrix.sdijf file is produced which can be          
+diagonalised using DIAGSTD to calculate the eigenvalues and vectors.     
+                                                                         
+This program also outputs a map of the spring connections, ENM.vmd which 
+can be viewed using VMD, and a pdb of the Ca atoms only, CAonly.pdb      
+                                                                         
+     Usage:                                                              
+             genENM -pdb pdbfile [-c cut-off] [-f force] [-ccust cfile]  
+                    [-fcust ffile] [-spcust spfile] [-mass] [-ca]        
+                    [-lig1] [-res] [-het] [-hin] [-hine h] [-an p]       
+                                                                         
+Option    Type       Value       Description                             
+------------------------------------------------------------             
+ -pdb     Input                  pdb file name                           
+  -c      Input,Opt  12          Cut-off for spring connectivity         
+  -f      Input,Opt  1           Spring constant                         
+-ccust    Input,Opt              Allows custom cutoffs read from cfile   
+-fcust    Input,Opt              Allows custom spring constants read     
+                                 from ffile                              
+-spcust   Input,Opt              Allows custom springs to be included    
+-mass      Opt                   Uses actual atom masses                 
+ -ca       Opt                   Calculates Ca model only                
+ -lig1     Opt                   Assigns each residue in the HETATMs one 
+                                 average point, only works with -het and 
+                                 -ca flags as well                       
+ -res      Opt                   Assigns ca atom the whole residue mass, 
+                                 only works with -ca flag as well        
+ -het      Opt                   Includes reading HETATM records         
+ -hin      Opt                   Uses Hinsen fitted interactions         
+ -hine     Input,Opt             Uses Hinsen exponential interactions    
+                                 instead, h is the decay factor          
+  -an      Input,Opt             Uses anisotropic interactions instead,  
+                                 p is the order of the power decay       
+                                                                         
+                                                                         
+ cfile format:                                                           
+       WRITE(cfile,'(A4,1X,F7.3)') atomname, cutoff                      
+   atomname is in pdb format                                             
+   e.g.                                                                  
+   | C     8.000                                                         
+   | N     8.000                                                         
+                                                                         
+                                                                         
+ ffile format:                                                           
+       WRITE(ffile,'(1X,I4,1X,A1,1X,I4,1X,A1,1X,F8.3)')                  
+                                         res1, chain1, res2, chain2, kij 
+   res is the residue numbers, chain is the chain code.                  
+         res2 can be * which means all connections with res1             
+   e.g.                                                                  
+   |   34 A   24 A      3.0                                              
+   |  329 A    * B      3.0                                              
+   N.B. this will only set connections if within cutoff                  
+                                                                         
+                                                                         
+ spfile format:                                                          
+       WRITE(spfile,'(2(1X,I4,1X,A1))') res1, chain1, res2, chain2       
+   res is the residue numbers. chain is the chain associated with res    
+   e.g.                                                                  
+   |   34 A   24 B                                                       
+   |  329 C  124 D                                                       
+   N.B. this will only set connections regardless of cutoff              
+
+
+
+
+
+
+
+                           D  I  A  G  S  T  D                           
+                               VERSION 1.0                               
+                                                                         
+                               Written by:                               
+                      Tom Rodgers and David Burnell                      
+                                                                         
+This program calculates the normal modes for a ENM based on the reduced  
+Hermitian matrix file, matrix.sdijf, produced from the ENM program.      
+A matrix.eigenfacs file is produced which can be further analysed using  
+the programs in this toolbox.                                            
+                                                                         
+     Usage:                                                              
+             diagstd [-i matrix]                                         
+                                                                         
+Option    Type       Value           Description                         
+------------------------------------------------------------             
+  -i      Input,Opt  matrix.sdijf    reduced Hermitian matrix file       
+
+
+
+
+
+
+
+                           D  I  A  G  R  T  B                           
+                               VERSION 1.0                               
+                                                                         
+                               Written by:                               
+                                                                         
+                                                                         
+This program calculates the normal modes for a ENM using the rotational  
+translational block method based on the reduced Hermitian matrix file,   
+matrix.sdijf, produced from the ENM program.                             
+The ENM can be split by residues, by the secondary structure (SECO) using
+the HELIX and SHEET comands in the pdb, or by custom domains (DOMN) read 
+from input.domain file.                                                  
+A matrix.eigenfacs file is produced which can be further analysed using  
+the programs in this toolbox.                                            
+                                                                         
+     Usage:                                                              
+             diagrtb -pdb pdbfile [-i matrix] [-r num] [-str option]     
+                   [-mass] [-het] [-e num] [-high] [-eig] [-mat]         
+                                                                         
+Option    Type       Value           Description                         
+------------------------------------------------------------             
+ -pdb     Input                      pdb file                            
+  -i      Input,Opt  matrix.sdijf    Reduced Hermitian matrix file       
+  -r      Input,Opt  1               Number of residues per block        
+ -str     Input,Opt  NONE            Substructuring options, NONE, SECO, 
+                                     or DOMN                             
+ -mass      Opt                      Use true atom masses                
+ -res       Opt                      Use atom residue mass               
+ -het       Opt                      Also read HETATM records            
+  -e      Input,Opt  56              Number of eigenvectors output       
+ -eig       Opt                      Print eigenvalues for RTBs          
+ -mat       Opt                      Print RTB matrix                    
+-covar      Opt                      Run with covar matrix input         
+                                                                         
+ input.domain format:                                                    
+   WRITE('input.domain','(I4,1X,A1,1X,I4,1X,I4)') domb, cdom, doms, dome 
+   atomname is in pdb format                                             
+   e.g.                                                                  
+   |   1 A   10   15                                                     
+   |   2 B   20   30                                                     
+
+
+
+
+
+
+
+
+                           G  N  M  P  R  O  D                           
+                               VERSION 1.0                               
+                                                                         
+                               Written by:                               
+                      Tom Rodgers and David Burnell                      
+                                                                         
+This program calculates the normal modes for a GNM based on the pdb      
+inputed with -pdb. A matrix.eigenfacs file is produced which can be      
+further analysed using the programs in this toolbox.                     
+                                                                         
+This program also outputs a map of the spring connections, GNM.vmd which 
+can be viewed using VMD, a representation of the pdb in 2d, flat.pdb, and
+a pdb of the Ca atoms only, CAonly.pdb.                                  
+                                                                         
+     Usage:                                                              
+             GNM -pdb pdbfile [-c cut-off] [-f force] [-het]             
+                                                                         
+Option    Type       Value           Description                         
+------------------------------------------------------------             
+ -pdb     Input                      pdb file name                       
+  -c      Input,Opt  12              Cut-off for spring connectivity     
+  -f      Input,Opt  1               Spring constant                     
+ -het      Opt                       Include HETATM references with flag 
+
+
+
+
+
+
+
+                           F  R  E  Q  /  E  N                           
+                               VERSION 1.0                               
+                                                                         
+                               Written by:                               
+                      Tom Rodgers and David Burnell                      
+                                                                         
+This program calculates the normal mode frequencies, output in           
+mode.frequencies, from an eigenfacs formated file which can be produced  
+from the included ENM code, GNM code, and the GroAMED packages.          
+                                                                         
+This program also outputs the energy parameters for the normal modes,    
+output in mode.energy. The value of the partition function, Z; the       
+full harmonic free energy, G; the Schlitter free energy, Gs; the full    
+harmanic entropy, S; and the Schlitter entropy, Ss, are given for each   
+mode.                                                                    
+                                                                         
+     Usage:                                                              
+             frequency [-i infile] [-t temperature]                      
+                                                                         
+Option    Type       Value             Description                       
+------------------------------------------------------------             
+  -i      Input,Opt  matrix.eigenfacs  Eigenvector file name             
+  -t      Input,Opt  298               Temperature of entropy calculation
+  -s      Input,Opt  1                 First eigenvalue included         
+  -e      Input,Opt  1000              Last eigenvalue included          
+
+
+
+
+
+
+
+                           N  M  W  I  Z  W  T                           
+                               VERSION 1.0                               
+                                                                         
+                               Written by:                               
+                      Tom Rodgers and David Burnell                      
+                                                                         
+This program creates a file suitable for use with the VMD plugin NMWiz,  
+output as nmwix.nmd, from an eigenfacs formated file which can be        
+produced from the included ENM code, GNM code, GroNM, GroED, or AmberED  
+packages. It also requires the matching pdb and the mode.bfactors file   
+produced with the rms program.                                           
+                                                                         
+     Usage:                                                              
+             w_nmwiz [-i infile] [-pdb pdbfile] [-n numberofmodes]       
+                     [-b bfactorfile] [-het]                             
+                                                                         
+Option    Type       Value             Description                       
+------------------------------------------------------------             
+  -i      Input,Opt  matrix.eigenfacs  Eigenvector file                  
+ -pdb     Input,Opt  CAonly.pdb        PDB filename                      
+  -n      Input,Opt   25               Number of modes written           
+  -b      Input,Opt  mode.bfactors     Calculated bfactor file           
+  -het     Opt                Incudes reading HETATM records with flag   
+
+
+
+
+
+
+
+
+                          C  R  O  S  C  O  R                           
+                               VERSION 1.0                               
+                                                                         
+                               Written by:                               
+                      Tom Rodgers and David Burnell                      
+                                                                         
+This program calculates the average residue cross correlation from an    
+eigenfacs formated file which can be produced from the included ENM      
+code, GNM code, or the GroAMED packages.                                 
+                                                                         
+The output file, crosscor.dat can be plotted in gnuplot with the command:
+splot "crosscor.dat" using 1:2:3 notitle                                 
+                                                                         
+     Usage:                                                              
+             cross_cor -i infile [-s startvec]              
+                       [-e endvec] [-d1] [-het]                          
+                                                                         
+Option    Type       Value             Description                       
+------------------------------------------------------------             
+  -i       Input                       First eigenvector file            
+  -s      Input,Opt   7                First included eigenvector number 
+  -e      Input,Opt   31               Last included eigenvector number  
+  -d1       Opt                        Allows 1d vectors with flag       
+  -het      Opt                        Incudes reading HETATM records with flag
+
+
+
+
+
+
+
+
+                           R  M  S  /  C  O  L                           
+                               VERSION 1.0                               
+                                                                         
+                               Written by:                               
+                      Tom Rodgers and David Burnell                      
+                                                                         
+This program calculates the RMSD of each of the atoms for each mode,     
+output in rms.val, from an eigenfacs formated file which can be produced 
+from the included ENM code, GNM code, or the GroAMED package.            
+                                                                         
+This program also outputs the collectivity of each mode, output in       
+collectivity.val.                                                        
+                                                                         
+This program also calculates the predicted bfactors and compares them    
+with the experimental values given in the original pdbfile, output in    
+mode.bfactors.                                                           
+                                                                         
+     Usage:                                                              
+             rms [-i infile] [-pdb pdbfile] [-s startvec]                
+                 [-e endvec] [-d1] [-het]                                
+                                                                         
+Option    Type       Value             Description                       
+------------------------------------------------------------             
+  -i      Input,Opt  matrix.eigenfacs  First eigenvector file            
+ -pdb     Input,Opt  CAonly.pdb        pdb file                          
+  -s      Input,Opt   7                First included eigenvector number 
+  -e      Input,Opt   31               Last included eigenvector number  
+  -d1       Opt                        Allows 1d vectors with flag       
+  -het      Opt                        Incudes reading HETATM records with flag
+
+
+
+
+
+
+
+
+
+                           G  R  O  A  M  E  D                           
+                               VERSION 1.0                               
+                                                                         
+                               Written by:                               
+                      Tom Rodgers and David Burnell                      
+                                                                         
+This program converts the output from gromacs g_covar, gromacs g_nmeig,  
+and amber ptraj commands into files that are compatable with this        
+toolbox. For gromacs, the eigenvec.trr file needs to be converted into a 
+readable format using gromacs:                                           
+       gmxdump -f eigenvec.trr > eigenvec.out                            
+This file can then be input using the -i flag.                           
+                                                                         
+The average pdb file produced by gromacs is also needed with the original
+pdb file that was used. The eigenval.xvg produced by gromacs is also     
+used.                                                                    
+                                                                         
+A matrix.eigenfacs file is outputted with a pdb file of the Ca atoms,    
+CAonly.pdb                                                               
+                                                                         
+     Usage:                                                              
+           GroAMED -i infile -mdpdb mdpdb -pdb originalpdb               
+                   [-eigen eigenfile] [-lig ligand] [-nofit] [-ca]       
+                   [-mass resmass]                                       
+                                                                         
+Option    Type      Value        Description                             
+------------------------------------------------------------             
+  -i      Input                  CA ouputfile                            
+ -mdpdb   Input                  MD output pdbfile                       
+ -pdb     Input                  Original pdb file                       
+ -eigen   Input,Opt eigenval.xvg Generated eigenvalue file               
+ -lig     Input,Opt  NONE        Name of any ligand included             
+ -nofit    Opt                   Use if no fitting was used in gromacs   
+  -ca      Opt                   Use if only Ca atoms were fit in gromacs
+ -mass    Input,Opt  99.466      Average residue mass for rescaling if   
+                                 -ca is used                             
+  -nm      Opt                   Use normal mode data instead of PCA data
+
+
+
+
+
+
+
+
+
+                           P  L  O  T  P  D  B                           
+                               VERSION 1.0                               
+                                                                         
+                               Written by:                               
+                      Tom Rodgers and David Burnell                      
+                                                                         
+This program copies values for each residue into the bfactor position    
+in a pdb, if Ca only pdb then the values will be assigned to each Ca     
+atom, if a full pdf then the values will be assigned to each residue. It 
+adjusts the second chain assuming that the same residue starts, the      
+offset can be adjusted with -o num.                                      
+                                                                         
+overlap.dat contains the overlap of each atom and sum.dat contains the   
+average values for the whole system.                                     
+                                                                         
+     Usage:                                                              
+             plotpdb -i infile -pdb pdbfile [-het] [-o offset]           
+                                                                         
+Option    Type      Value     Description                                
+------------------------------------------------------------             
+  -i      Input               Res data file  |resnumber value| no header 
+  -pdb    Input               pdbfile                                    
+  -het    Opt                 Incudes reading HETATM records with flag   
+  -o      Input,Opt 0         Value of the offset if needed              
+
+
+
+
+
+
+
+
+
+                              C  O  V  A  R                              
+                               VERSION 1.0                               
+                                                                         
+                               Written by:                               
+                      Tom Rodgers and David Burnell                      
+                                                                         
+This program calculates the covarience matrix from a trajectory and      
+outputs an eigenfacs type file of the eigenvalues and eigenvectors which 
+can be further analysed using the rest of this toolbox. The input        
+trajectories that can be used are:                                       
+    .prmtop parameter file and .mdcrd trajectory files from amber        
+    .gro parameter file and gmx_dump written trajectory file from gromacs
+    .CONFIG parameter file and .HISTORY trajectory file from dl_poly     
+                                                                         
+Output files:                                                            
+     average.pdb - average coordinates of the trajectory                 
+     rmsd.dat - the rmsd displacement of the atoms from the average      
+     matrix.sdijf - the covarience matrix, only with -mat option         
+     fiteigen.dat - the trajectory coordinates dot product with the      
+                    eigenvectors                                         
+                                                                         
+     Usage:                                                              
+             covar -form filetype -p parameterfile -i trajectoryfile     
+                   [-ca] [-res] [-s startframe] [-e endframe]            
+                   [-skip n] [-mat] [-chain chain.dat]                   
+                                                                         
+Option    Type      Value     Description                                
+------------------------------------------------------------             
+ -form    Input               Input file types: amber, gromacs, dl_poly  
+  -p      Input               Parameter file: .prmtop, .gro, CONFIG      
+  -i      Input               Trajectory file: .mdcrd, gmx_dump, HISTORY 
+  -ca     Opt                 Only uses Ca atoms                         
+ -res     Opt                 Takes the mass of the residue for the Ca   
+                              mass in the analysis, only works with -ca  
+  -s      Input,Opt 1         First frame included from the trajectory   
+  -e      Input,Opt 100000    Last frame included from the trajectory    
+ -skip    Input,Opt 1         Take every n frames                        
+ -mat     Opt                 Output the covar matrix, matrix.sdijf      
+ -chain   Input,Opt           File to list the atoms in each custom user 
+                              chain                                      
+  -sv     Input,Opt 1         First eigenvector included in plot         
+  -ev     Input,Opt 3         Last eigenvector included in plot
+
+
+
+
+
+
+
+
+
+                           F  U  L  L  2  C  A                           
+                               VERSION 1.0                               
+                                                                         
+                               Written by:                               
+                      Tom Rodgers and David Burnell                      
+                                                                         
+This program converts any imput files to the versions with only the      
+alpha Carbon atoms included.                                             
+                                                                         
+     Usage:                                                              
+             genENM -pdb pdbfile [-c cut-off] [-f force] [-ccust cfile]  
+                    [-fcust ffile] [-mass] [-ca] [-res] [-het] [-hin h]  
+                    [-an p]                                              
+                                                                         
+Option    Type       Value       Description                             
+------------------------------------------------------------             
+ -pdb     Input                  pdb file name                           
+  -i    Input,Opt                Convert the eigenfacs style file        
+ -bfac  Input,Opt                Convert the mode.bfactors file          
+ -het      Opt                   Includes reading HETATM records         
+
+
+
+
+
+
+
+
+
+                           D  O  M  A  I  N  S                           
+                               VERSION 1.0                               
+                                                                         
+                               Written by:                               
+                                                                         
+                                                                         
+This program rewrites a pdbfile in order of the domains listed in        
+input.domain for use with rtb domains.                                   
+                                                                         
+This program also rewrites the domain eigenfacs file back into the       
+pdb order.                                                               
+                                                                         
+     Usage:                                                              
+             domains -pdb pdbfile [-i matrix]                            
+                                                                        
+Option    Type       Value             Description                       
+------------------------------------------------------------             
+ -pdb      Input                        pdb file                         
+ -pdb2   Input,Opt  domains.pdb       Domain ordered pdb file            
+  -i     Input,Opt  matrix.eigenfacs  Domain ordered eigenfacs file      
+ -het       Opt                       Include reading HETATM records     
+ -rev       Opt                       Sort eigenfacs file instead of pdb 
+                                                                         
+ input.domain format:                                                    
+   WRITE('input.domain','(I4,1X,A1,1X,I4,1X,I4)') domb, cdom, doms, dome 
+   atomname is in pdb format                                             
+   e.g.                                                                  
+   |   1 A   10   15                                                     
+   |   2 B   20   30                                                     
+
+
+
+
+
+
+
+
+
+
+                           P  R  O  J  E  C  T                           
+                               VERSION 1.0                               
+                                                                         
+                               Written by:                               
+                      Tom Rodgers and David Burnell                      
+                                                                         
+This program projects the eigenvectors onto the pdb file                 
+                                                                         
+     Usage:                                                              
+             genENM -pdb pdbfile [-i eigenfacsfile] [-s start]           
+                    [-e end] [-scale n] [-het]                           
+                                                                         
+Option    Type       Value                Description                    
+------------------------------------------------------------             
+ -pdb     Input                           pdb file name                  
+  -i    Input,Opt    matrix.eigenfacs     eigenvectors file              
+  -s    Input,Opt    7                    first eigenvector included     
+  -e    Input,Opt    31                   last eigenvector included      
+-scale  Input,Opt    1                    scale factor                   
+ -het      Opt                            include HETATMs                
+
+
+
+
+
+
+
+
+
+
+
+                           E  G  N  P  R  O  J                           
+                               VERSION 1.0                               
+                                                                         
+                               Written by:                               
+                      Tom Rodgers and David Burnell                      
+                                                                         
+This program performs a projection on the eigenspace defined by          
+precalculated eigenvectors and outputs a plotable file over the number of
+specified trajectories.                                                  
+The input trajectories that can be used are:                             
+    .prmtop parameter file and .mdcrd trajectory files from amber        
+    .gro parameter file and gmx_dump written trajectory file from gromacs
+    .CONFIG parameter file and .HISTORY trajectory file from dl_poly     
+                                                                         
+     Usage:                                                              
+           eigen_proj -form filetype -p parameterfile -i trajectoryfile  
+                   -pdb pdbfile -eigen eigenfacs [-ca] [-s startframe]   
+                   [-e endframe] [-sv startvector] [-ev endvector]       
+                   [-skip n]                                             
+                                                                         
+Option    Type      Value     Description                                
+------------------------------------------------------------             
+ -form    Input               Input file types: amber, gromacs, dl_poly  
+ -eigen   Input               Eigenvectors eigenfacs file name           
+ -pdb     Input               Average pdb structure matching eigenfacs   
+  -p      Input               Parameter file: .prmtop, .gro, CONFIG      
+  -i      Input               Trajectory file: .mdcrd, gmx_dump, HISTORY 
+  -ca     Opt                 Only uses Ca atoms                         
+  -s      Input,Opt 1         First frame included from the trajectory   
+  -e      Input,Opt 100000    Last frame included from the trajectory    
+ -skip    Input,Opt 1         Take every n frames                        
+  -sv     Input,Opt 1         First eigenvector included for analysis    
+  -ev     Input,Opt 3         Last eigenvector included for analysis     
+
+
+
+
+
+
+
+
+
+
+                          P  D  B  D  I  F  F                           
+                               VERSION 1.0                               
+                                                                         
+                               Written by:                               
+                      Tom Rodgers and David Burnell                      
+                                                                         
+This program projects the eigenvectors onto the pdb file                 
+                                                                         
+     Usage:                                                              
+             genENM -pdb pdbfile [-i eigenfacsfile] [-s start]           
+                    [-e end] [-scale n] [-het]                           
+                                                                         
+Option    Type       Value                Description                    
+------------------------------------------------------------             
+ -pdb     Input                           pdb file name                  
+  -i    Input,Opt    matrix.eigenfacs     eigenvectors file              
+  -s    Input,Opt    7                    first eigenvector included     
+  -e    Input,Opt    31                   last eigenvector included      
+-scale  Input,Opt    1                    scale factor                   
+ -het      Opt                            include HETATMs                
+
+
+
+
+
+
+
+
+
+                           S  P  A  C  I  N  G                           
+                               VERSION 1.0                               
+                                                                         
+                               Written by:                               
+                      Tom Rodgers and David Burnell                      
+                                                                         
+This program produces a file, dist.dat for plotting the spacing between  
+atoms.                                                                   
+                                                                         
+     Usage:                                                              
+             spacing -pdb pdbfile [-ca] [-het] [-lig1]                   
+                                                                         
+Option    Type       Value       Description                             
+------------------------------------------------------------             
+ -pdb     Input                  pdb file name                           
+ -ca       Opt                   Calculates Ca model only                
+ -lig1     Opt                   Assigns each residue in the HETATMs one 
+                                 average point, only works with -het and 
+                                 -ca flags as well                       
+ -het      Opt                   Includes reading HETATM records         
+
+
+
+
+
+
+
+
+                           M  O  V  E  I  N  G                           
+                               VERSION 1.0                               
+                                                                         
+                               Written by:                               
+                      Tom Rodgers and David Burnell                      
+                                                                         
+This program calculates the change in the distance between atoms between 
+the equilibrium value and the value after applying the eigenvectors.     
+                                                                         
+The output file, movement.dat, can be plotted in gnuplot with the        
+command:                                                                 
+splot "moving.dat" using 1:2:3 notitle                                   
+                                                                         
+     Usage:                                                              
+             movement -pdb pdbfile -i eigenfacs file [-s start]          
+                      [-e end]                                           
+                                                                         
+Option    Type       Value             Description                       
+------------------------------------------------------------             
+ -pdb     Input                        pdb file name                     
+  -i      Input                        Eigenvector file name             
+  -s      Input,Opt  7                 First eigenvalue included         
+  -e      Input,Opt  31                Last eigenvalue included           
+
+
+
+
+
+
+
+
+
+
+                           T  R  A  J  P  D  B                           
+                               VERSION 1.0                               
+                                                                         
+                               Written by:                               
+                      Tom Rodgers and David Burnell                      
+                                                                         
+This program calculates the covarience matrix from a trajectory and      
+                                                                         
+     Usage:                                                              
+             covar -form filetype -p parameterfile -i trajectoryfile     
+                   [-ca] [-res] [-s startframe] [-e endframe]            
+                   [-skip n]                                             
+                                                                         
+Option    Type      Value     Description                                
+------------------------------------------------------------             
+ -form    Input               Input file types: amber, gromacs, dl_poly  
+  -p      Input               Parameter file: .prmtop, .gro, CONFIG      
+  -i      Input               Trajectory file: .mdcrd, gmx_dump, HISTORY 
+  -ca     Opt                 Only uses Ca atoms                         
+ -res     Opt                 Takes the mass of the residue for the Ca   
+                              mass in the analysis, only works with -ca  
+  -s      Input,Opt 1         First frame included from the trajectory   
+  -e      Input,Opt 100000    Last frame included from the trajectory    
+ -skip    Input,Opt 1         Take every n frames                        
+ -box     Input,Opt 3         box type used                              
+ -pbc     Opt                 Use pbcs                                   
+ -sol     Opt                 Include solvent atoms                      

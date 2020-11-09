@@ -1,0 +1,30 @@
+This folder contains some useful python files:
+
+acpype.py - converts amber topology files into gromacs
+            licence information in file
+
+amber2xtc.py - converts amber trajectory files into gromacs xtc files
+               licence information in file
+
+cb.py - produces a picture of all the colour bar options installed in 
+        your version of matplotlib
+
+plot_crosscor.py - plots the cross correlation information produced
+                   from the CROSSCOR program, -help flag for help
+
+plot_dist.py - plots the distance information produced from the
+               SPACING program, -help flag for help
+
+plot_dist_cross.py - plots the distance and cross correlation graph, 
+                     -help flag for help
+
+plot_eigen_proj.py - plots the fiteigen.dat file, -help flag for help
+
+plot-movement.py - plot the r2 dispcament values for the MOVEMENT program,
+                   -help flag for help
+
+plot-overlap.py - plots the overlap from the OVERLAP program, -help flag
+                  for help
+
+xmgrace-grad.py - writes lines for colour selections in xmgrace for a colour
+                  gradient. -n for number of colours -g for grayscale
