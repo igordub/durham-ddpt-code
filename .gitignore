@@ -1,5 +1,24 @@
 
 bin/*
-config.log
-config.status
 Makefile
+config.status
+config.log
+bin/COVAR
+bin/CROSCOR
+bin/DIAGRTB
+bin/DIAGSTD
+bin/DOMAINS
+bin/EGNPROJ
+bin/FREQEN
+bin/FULL2CA
+bin/GNMPROD
+bin/GROAMED
+bin/MOVING
+bin/NMWIZWT
+bin/OVERLAP
+bin/PDBDIFF
+bin/PLOTPDB
+bin/PROJECT
+bin/RMSCOL
+bin/SPACING
+bin/TRAJPDB
