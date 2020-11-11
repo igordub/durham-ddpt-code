@@ -67,7 +67,7 @@ PROGRAM frequency
      Gsch=-0.5d0*(dlog(1+(dexp(1.0d0))**2/(1.438775057*freq(i)/T)**2)+2*(1.438775057*freq(i)/T)/ &
           dexp(1.0d0)*datan(dexp(1.0d0)/(1.438775057*freq(i)/T))-2)
      Ssch=0.5d0*dlog((1+(dexp(1.0d0))**2/(1.438775057*freq(i)/T)**2))
-     WRITE(9875,'(1X,I5,1X,F12.5,4(F10.5))') i, Z, en, Gsch, S, Ssch
+     WRITE(9875,'(1X,I5,1X,F18.16,4(F18.16))') i, Z, en, Gsch, S, Ssch
   END DO
  
   CLOSE(9874)
