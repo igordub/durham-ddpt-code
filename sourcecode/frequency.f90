@@ -57,7 +57,7 @@ PROGRAM frequency
   WRITE(9874,'(A)')"# in cm-1 assuming that Hessian was in CHARMM units"
 
   OPEN(file="mode.energy",unit=9875)
-  WRITE(9875,'(A)')"#  Mode            Z                       G/kT                    Gs/kT                   S/k                     Ss/k"
+  WRITE(9875,'(A1,2X,A4,12X,A1,23X,A4,20X,A5,20X,A3,21X,A4)') '#', 'Mode', 'Z', 'G/kT', 'Gs/kT', 'S/k', 'Ss/k'
 
   DO i=1,num
      WRITE(9874,'(F20.16)') freq(i)
