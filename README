@@ -7,6 +7,8 @@ Quick Install:
 3. make install (sudo if you have not selected a local path)
 4. Enjoy!
 
+P.S. If an error occures in running make or make install use the following command to delete Linux non-friendly characthers  
+sed -i -e 's/\r$//' Makefile
 
 This toolbox has been tested with:
       gfortran > 4.4.1
