@@ -50,6 +50,12 @@ diagrtb:
 		-o ./bin/${PREFIX}DIAGRTB${SUFFIX}
 		@echo "Built D  I  A  G  R  T  B"
 
+diagval:	
+		@${COMPILER} ./sourcecode/types.f90 ./sourcecode/utils.f90 \
+		./sourcecode/write_files.f90 ./sourcecode/diagval.f90 \
+		-o ./bin/${PREFIX}DIAGVAL${SUFFIX}
+		@echo "Built D  I  A  G  V  A  L"
+
 GNM:            
 		@${COMPILER} ./sourcecode/types.f90 ./sourcecode/read_files.f90 \
 		./sourcecode/utils.f90 ./sourcecode/GNM.f90 \
