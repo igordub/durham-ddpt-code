@@ -80,7 +80,7 @@ SUBROUTINE helptext(iunit)
   IMPLICIT NONE
   INTEGER :: iunit
   WRITE(iunit,'(A)')"                           F  R  E  Q  /  E  N                           "
-  WRITE(iunit,'(A)')"                               VERSION 1.0                               "
+  WRITE(iunit,'(A)')"                               VERSION 1.1                               "
   WRITE(iunit,'(A)')"                                                                         "  
   WRITE(iunit,'(A)')"                               Written by:                               "
   WRITE(iunit,'(A)')"                      Tom Rodgers and David Burnell                      "
