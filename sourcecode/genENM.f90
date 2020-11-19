@@ -934,10 +934,10 @@ SUBROUTINE helptext(iunit)
   IMPLICIT NONE
   INTEGER :: iunit
   WRITE(iunit,'(A)')"                           G  e  n  E  N  M  M                           "
-  WRITE(iunit,'(A)')"                               VERSION 1.0                               "
+  WRITE(iunit,'(A)')"                               VERSION 1.1                               "
   WRITE(iunit,'(A)')"                                                                         "  
   WRITE(iunit,'(A)')"                               Written by:                               "
-  WRITE(iunit,'(A)')"                      Tom Rodgers and David Burnell                      "
+  WRITE(iunit,'(A)')"               Tom Rodgers, David Burnell and Charlie Heaton             "
   WRITE(iunit,'(A)')"                                                                         "
   WRITE(iunit,'(A)')"This program produces the Hermitian matrix for a ENM based on the pdb    "
   WRITE(iunit,'(A)')"inputed with -pdb. A matrix.sdijf file is produced which can be          "
