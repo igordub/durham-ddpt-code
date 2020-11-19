@@ -83,7 +83,7 @@ SUBROUTINE helptext(iunit)
   WRITE(iunit,'(A)')"                               VERSION 1.1                               "
   WRITE(iunit,'(A)')"                                                                         "  
   WRITE(iunit,'(A)')"                               Written by:                               "
-  WRITE(iunit,'(A)')"                      Tom Rodgers and David Burnell                      "
+  WRITE(iunit,'(A)')"              Tom Rodgers, David Burnell and Igors Dubanevics            "
   WRITE(iunit,'(A)')"                                                                         "
   WRITE(iunit,'(A)')"This program calculates the normal mode frequencies, output in           "
   WRITE(iunit,'(A)')"mode.frequencies, from an eigenfacs formated file which can be produced  "
