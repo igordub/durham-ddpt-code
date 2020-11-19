@@ -42,14 +42,6 @@ diagstd:
 		-o ./bin/${PREFIX}DIAGSTD${SUFFIX}
 		@echo "Built D  I  A  G  S  T  D"
 
-diagrtb:	
-		@${COMPILER} ./sourcecode/types.f90 \
-		./sourcecode/read_files.f90 ./sourcecode/utils.f90 \
-		./sourcecode/write_files.f90 ./sourcecode/rtb_util.f90 \
-		./sourcecode/diagrtb.f90 \
-		-o ./bin/${PREFIX}DIAGRTB${SUFFIX}
-		@echo "Built D  I  A  G  R  T  B"
-
 diagval:	
 		@${COMPILER} ./sourcecode/types.f90 ./sourcecode/utils.f90 \
 		./sourcecode/write_files.f90 ./sourcecode/diagval.f90 \
@@ -175,3 +167,4 @@ veryclean:	clean
 
 ##########################################################################
 #Tom Rodgers 28-09-2011
+#Igors Dubanevics 19-11-2020
