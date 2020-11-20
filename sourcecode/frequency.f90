@@ -60,7 +60,7 @@ PROGRAM frequency
   WRITE(9875,'(A1,2X,A4,12X,A1,23X,A4,20X,A5,20X,A3,21X,A4)') '#', 'Mode', 'Z', 'G/kT', 'Gs/kT', 'S/k', 'Ss/k'
 
   DO i=1,num
-     WRITE(9874,'(F20.16)') freq(i)
+     WRITE(9874,'(F22.16)') freq(i)
      Z=1/(1-dexp(-1.438775057*freq(i)/T))
      en=-dlog(Z)
      S=(1.438775057*freq(i)/T)/(dexp(1.438775057*freq(i)/T)-1)-dlog(1-dexp(-1.438775057*freq(i)/T))
