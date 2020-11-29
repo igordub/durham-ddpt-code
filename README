@@ -93,7 +93,10 @@ Option    Type       Value       Description
                                  instead, h is the decay factor          
   -an      Input,Opt             Uses anisotropic interactions instead,  
                                  p is the order of the power decay       
-                                                                         
+  -back    Input,Opt             Strengthens backbone CA atoms by a
+                                 factor of b
+  -dna     Opt                   Reads pdbs that contain DNA, includes
+  -dna     Opt                   C4 and C1' atoms if -ca is used                                                                      
                                                                          
  cfile format:                                                           
        WRITE(cfile,'(A4,1X,F7.3)') atomname, cutoff                      
