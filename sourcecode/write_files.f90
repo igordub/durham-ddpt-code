@@ -2,6 +2,7 @@ MODULE write_files
 ! write_pdb - write a pdbfile
 ! write_pdb_sec - writes a pdbfile with secondary structure labels
 ! write_eigenfacs - write the eigenfacs type file
+! write_eigenvals - write the eigenvals type file
 ! write_gro - write a .gro file
 !
 CONTAINS
@@ -147,6 +148,25 @@ CONTAINS
     CLOSE(4679)
     
   END SUBROUTINE write_eigenfacs
+
+  SUBROUTINE write_eigenvals(fname,eigenvecs,eigenvals,len,natom3)
+   USE nrutil
+   IMPLICIT NONE
+   CHARACTER :: fname*120
+   INTEGER :: len, natom3, k, i
+   REAL(DP) :: eigenvals(len),eigenvecs(natom3,len)
+   
+   OPEN(file=fname,form="FORMATTED",unit=4679)
+   
+   DO k=1,len
+      
+      WRITE(4679,'(1X,A6,I5,7X,A5,1PG12.4)') "VECTOR", k, "VALUE", eigenvals(k)
+      
+   END DO
+   
+   CLOSE(4679)
+   
+ END SUBROUTINE write_eigenvals
 
    SUBROUTINE write_gro(grofile,natom,num,atnum,name,res,resnum,traj)
     USE nrtype

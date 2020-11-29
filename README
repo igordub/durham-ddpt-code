@@ -195,7 +195,25 @@ Option    Type       Value           Description
 
 
 
-
+                           D  I  A  G  V  A  L                           
+                               VERSION 1.0                               
+                                                                           
+                               Written by:                               
+                            Igors Dubanevics                             
+                                                                         
+This program calculates the normal modes for a ENM based on the reduced  
+Hermitian matrix file, matrix.sdijf, produced from the ENM program.      
+A matrix.eigenvals file is produced which can be further analysed using  
+the programs in this toolbox. Can only be used by FREQEN.                
+Based on DIAGSTD module. Writes only eigenvalues and ommits egeinvectors.
+                                                                         
+     Usage:                                                              
+             diagval [-i matrix]                                         
+                                                                         
+Option    Type       Value           Description                         
+------------------------------------------------------------             
+  -i      Input,Opt  matrix.sdijf    reduced Hermitian matrix file       
+                                                                         
 
 
 
