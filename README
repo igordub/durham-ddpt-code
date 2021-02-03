@@ -7,8 +7,6 @@ Quick Install:
 3. make install (sudo if you have not selected a local path)
 4. Enjoy!
 
-P.S. If an error occures in running make or make install use the following command to delete Linux non-friendly characthers  
-sed -i -e 's/\r$//' Makefile
 
 This toolbox has been tested with:
       gfortran > 4.4.1
@@ -93,10 +91,7 @@ Option    Type       Value       Description
                                  instead, h is the decay factor          
   -an      Input,Opt             Uses anisotropic interactions instead,  
                                  p is the order of the power decay       
-  -back    Input,Opt             Strengthens backbone CA atoms by a
-                                 factor of b
-  -dna     Opt                   Reads pdbs that contain DNA, includes
-  -dna     Opt                   C4 and C1' atoms if -ca is used                                                                      
+                                                                         
                                                                          
  cfile format:                                                           
        WRITE(cfile,'(A4,1X,F7.3)') atomname, cutoff                      
@@ -198,25 +193,7 @@ Option    Type       Value           Description
 
 
 
-                           D  I  A  G  V  A  L                           
-                               VERSION 1.0                               
-                                                                           
-                               Written by:                               
-                            Igors Dubanevics                             
-                                                                         
-This program calculates the normal modes for a ENM based on the reduced  
-Hermitian matrix file, matrix.sdijf, produced from the ENM program.      
-A matrix.eigenvals file is produced which can be further analysed using  
-the programs in this toolbox. Can only be used by FREQEN.                
-Based on DIAGSTD module. Writes only eigenvalues and ommits egeinvectors.
-                                                                         
-     Usage:                                                              
-             diagval [-i matrix]                                         
-                                                                         
-Option    Type       Value           Description                         
-------------------------------------------------------------             
-  -i      Input,Opt  matrix.sdijf    reduced Hermitian matrix file       
-                                                                         
+
 
 
 
