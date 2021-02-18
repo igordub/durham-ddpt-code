@@ -137,7 +137,7 @@ CONTAINS
     
     DO k=1,len
        
-       WRITE(4679,'(1X,A6,I5,7X,A5,1PG12.4)') "VECTOR", k, "VALUE", eigenvals(k)
+       WRITE(4679,'(1X,A6,I5,7X,A5,1PG24.16)') "VECTOR", k, "VALUE", eigenvals(k)
        WRITE(4679,'(A36)') " -----------------------------------"
        
        WRITE(4679,'(3(1PG12.4))') (eigenvecs(i,k),i=1,natom3)
