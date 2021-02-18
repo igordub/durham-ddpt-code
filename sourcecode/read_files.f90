@@ -913,7 +913,7 @@ OPEN(file='input.domain',form="FORMATTED",status="OLD",unit=2356)
         ELSE 
            IF ((vector.ge.startvec).and.(vector.le.endvec)) THEN
               j=vector-startvec+1
-              READ(lign80,'(3(1X,G23.16))') (eigenvec(i+k,j),k=1,ndim)
+              READ(lign80,'(3(1X,G11.4))') (eigenvec(i+k,j),k=1,ndim)
               i=i+ndim
            END IF
         END IF
