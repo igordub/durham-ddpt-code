@@ -43,7 +43,7 @@ PROGRAM diagstd
   natom=0
 
   DO
-     READ(6897,'(1X,I9,1X,I9,1X,G19.11)',IOSTAT=io) i,j,f
+     READ(6897,'(1X,I9,1X,I9,1X,G23.15)',IOSTAT=io) i,j,f
      IF (io > 0) THEN
         WRITE(*,*) 'Check input.  Something was wrong'
         STOP
@@ -72,7 +72,7 @@ PROGRAM diagstd
      ELSE IF (io < 0) THEN
         EXIT
      ELSE
-        READ(lign80,'(1X,I9,1X,I9,1X,G19.11)') i,j,a(i,j)
+        READ(lign80,'(1X,I9,1X,I9,1X,G23.15)') i,j,a(i,j)
         a(j,i)=a(i,j)
      ENDIF
   END DO
