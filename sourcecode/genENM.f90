@@ -803,7 +803,7 @@ PROGRAM genENM
         jat=(j-1)/3+1
         IF (a(1,j).ne.0.d0) THEN
            nnzero=nnzero+1
-           WRITE(9432,'(2I10,1PG20.16)') ii,j,a(1,j)/sqrt(mass(i)*mass(jat))
+           WRITE(9432,'(2I10,1PG24.16)') ii,j,a(1,j)/sqrt(mass(i)*mass(jat))
         END IF
      END DO
      
@@ -811,7 +811,7 @@ PROGRAM genENM
         jat=(j-1)/3+1
         IF (a(2,j).ne.0.d0) THEN
            nnzero=nnzero+1
-           WRITE(9432,'(2I10,1PG20.16)')ii+1,j,a(2,j)/sqrt(mass(i)*mass(jat))
+           WRITE(9432,'(2I10,1PG24.16)')ii+1,j,a(2,j)/sqrt(mass(i)*mass(jat))
         END IF
      END DO
      
@@ -819,7 +819,7 @@ PROGRAM genENM
         jat=(j-1)/3+1
         IF (a(3,j).ne.0.d0) THEN
            nnzero=nnzero+1
-           WRITE(9432,'(2I10,1PG20.16)') ii+2,j,a(3,j)/sqrt(mass(i)*mass(jat))
+           WRITE(9432,'(2I10,1PG24.16)') ii+2,j,a(3,j)/sqrt(mass(i)*mass(jat))
         END IF
      END DO
      
