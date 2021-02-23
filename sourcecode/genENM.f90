@@ -661,7 +661,7 @@ PROGRAM genENM
   WRITE(7432,'(A)') 'draw color black'
 
   ! Write PyMOL script for ENM visualization
-  OPEN(file='ENM.pml',form='FORMATTED',unit=7432)
+  OPEN(file='ENM.pml',form='FORMATTED',unit=7433)
 
   WRITE(7433,'(A)') '#!/usr/local/bin/vmd'
   WRITE(7433,'(A)') '# Script for PyMOL'
