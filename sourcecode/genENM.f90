@@ -850,7 +850,7 @@ PROGRAM genENM
   
   ! Close ENM.pml file
   WRITE(7433,'(A)') 'cmd.group("ENM", "*")'
-  WRITE(7433,'(3A)') 'cmd.load("',TRIM(pdbfile),'")'
+  WRITE(7433,'(A)') 'cmd.load("CAonly.pdb")'
   CLOSE(7433)
 
   WRITE(6,'(/A,F8.4,A)')' The matrix is ', 100.d0*dfloat(nnzero)/dfloat(3*natom*(3*natom+1)/2),' % Filled.'
