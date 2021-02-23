@@ -761,9 +761,9 @@ PROGRAM genENM
               ll=ll+1
               IF (j.gt.i) THEN
                  WRITE(7432,'(A,3F12.4,A,3F12.4,A)') 'draw line {',x(i),y(i),z(i),'} {',x(j),y(j),z(j),'}'
-                 WRITE(7433,'(A,F12.4,A,F12.4,A,F12.4,A,F12.4,A,F12.4,A,F12.4,A)') &
+                 WRITE(7433,'(A,F12.4,A,F12.4,A,F12.4,A,F12.4,A,F12.4,A,F12.4,A,I,A,I,A)') &
                  'cmd.load_cgo([ 9.0,',x(i),',',y(i),',',z(i),',',x(j),',',y(j),',',z(j), &
-                 ', radius, r1, g1, b1, r1, g1, b1 ], "ENM" )'
+                 ', radius, r1, g1, b1, r1, g1, b1 ], "'i,'_',j,'" )'
               END IF
               
               IF (ll.eq.1.or.dist.lt.dmin) dmin=dist
@@ -847,6 +847,7 @@ PROGRAM genENM
   CLOSE(7432)
   
   ! Close ENM.pml file
+  WRITE(7433,'(A)') 'cmd.group("ENM", "all")'
   WRITE(7433,'(3A)') 'cmd.load("',TRIM(pdbfile),'")'
   CLOSE(7433)
 
