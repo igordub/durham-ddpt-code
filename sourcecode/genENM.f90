@@ -849,7 +849,7 @@ PROGRAM genENM
   CLOSE(7432)
   
   ! Close ENM.pml file
-  WRITE(7433,'(A)') 'cmd.group("ENM", "all")'
+  WRITE(7433,'(A)') 'cmd.group("ENM", "*")'
   WRITE(7433,'(3A)') 'cmd.load("',TRIM(pdbfile),'")'
   CLOSE(7433)
 
