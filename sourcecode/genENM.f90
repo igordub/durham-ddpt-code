@@ -760,10 +760,12 @@ PROGRAM genENM
 
               ll=ll+1
               IF (j.gt.i) THEN
+                 WRITE(dummy_i, '(I5)') i
+                 WRITE(dummy_j, '(I5)') j
                  WRITE(7432,'(A,3F12.4,A,3F12.4,A)') 'draw line {',x(i),y(i),z(i),'} {',x(j),y(j),z(j),'}'
-                 WRITE(7433,'(A,F12.4,A,F12.4,A,F12.4,A,F12.4,A,F12.4,A,F12.4,A,I4,A,I4,A)') &
+                 WRITE(7433,'(A,F12.4,A,F12.4,A,F12.4,A,F12.4,A,F12.4,A,F12.4,5A)') &
                  'cmd.load_cgo([ 9.0,',x(i),',',y(i),',',z(i),',',x(j),',',y(j),',',z(j), &
-                 ', radius, r1, g1, b1, r1, g1, b1 ], "',i,'_',j,'")'
+                 ', radius, r1, g1, b1, r1, g1, b1 ], "',TRIM(ADJUSTL(dummy_i)),'_',TRIM(ADJUSTL(dummy_j)),'")'
               END IF
               
               IF (ll.eq.1.or.dist.lt.dmin) dmin=dist
