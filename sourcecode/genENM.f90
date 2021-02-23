@@ -8,7 +8,7 @@ PROGRAM genENM
   LOGICAL :: getoption, hetatm, caonly, resmass, atmass, cutvect,cutassign, &
        forceres,ukn,usesec,qexist,lig1,firstat, custb, dna, hin, is_numeric 
   CHARACTER :: dummy*120, pdbfile*120, lign80*80, nomatm*120, res2*4, nomres*120, &
-       foutname*120,custbfile*120
+       foutname*120,custbfile*120, dummy_i*5, dummy_j*5
   INTEGER :: natom, io, i, j, natomold, nident, ncusres,ii,ijjjj,iseed,jat,jj, &
        ll,nntr,nnzero,nhel,nshe,k,l,fat,cbs,cbnum,nseconds
   REAL(DP) :: cutoff, cutoffdef, rave, rdev, rmin, rmax,anmp,ddf,rkh,dist,dist2,dmax,dmin, &
