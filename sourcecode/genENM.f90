@@ -668,7 +668,7 @@ PROGRAM genENM
   WRITE(7433,'(A)') 'cmd.bg_color("white")'
   WRITE(7433,'(A)') 'r1,g1,b1 = 0,0,0 # color (black)'
   WRITE(7433,'(A)') 'spring_strength = 1'
-  WRITE(7433,'(A)') 'radius = spring_strength**(0.5) * 0.25'
+  WRITE(7433,'(A)') 'radius = spring_strength**(0.5) * 0.1'
 
   OPEN(file='matrix.sdijf',form='FORMATTED',unit=9432)
 
