@@ -663,7 +663,6 @@ PROGRAM genENM
   ! Write PyMOL script for ENM visualization
   OPEN(file='ENM.pml',form='FORMATTED',unit=7433)
 
-  WRITE(7433,'(A)') '#!/usr/local/bin/vmd'
   WRITE(7433,'(A)') '# Script for PyMOL'
   WRITE(7433,'(A)') '# Visualization of the Elastic Network with cyliders'
   WRITE(7433,'(A)') 'cmd.bg_color("white")'
@@ -848,7 +847,7 @@ PROGRAM genENM
   CLOSE(7432)
   
   ! Close ENM.pml file
-  WRITE(7433,'(3A)') 'cmd.load(',pdbfile,')'
+  WRITE(7433,'(A,A,A)') 'cmd.load(',pdbfile,')'
   CLOSE(7433)
 
   WRITE(6,'(/A,F8.4,A)')' The matrix is ', 100.d0*dfloat(nnzero)/dfloat(3*natom*(3*natom+1)/2),' % Filled.'
