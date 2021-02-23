@@ -2,3 +2,4 @@
 *.status
 Makefile
 bin/
+tmp/
