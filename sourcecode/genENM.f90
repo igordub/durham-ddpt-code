@@ -862,6 +862,7 @@ PROGRAM genENM
   WRITE(7433,'(A)') 'cmd.set_bond("stick_color", "black", "ENM")'
   WRITE(7433,'(A)') 'cmd.show_as("sticks", "ENM")'
   WRITE(7433,'(A)') 'cmd.show("spheres", "ENM")'
+  WRITE(7433,'(A)') 'cmd.set("sphere_scale", 0.8, "ENM")'
   WRITE(7433,'(A)') 'cmd.orient("ENM")'
   CLOSE(7433)
 
