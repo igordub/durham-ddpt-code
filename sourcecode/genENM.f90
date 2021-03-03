@@ -730,14 +730,17 @@ PROGRAM genENM
                         END IF
                      
                      ! Wildcard residue -> check wildcard chain
-                     ELSE IF (otherchain(ijjjj)) THEN
-                        ! Wildcard residue, but no wildcard chain -> check chain
-                        IF ((chaintwo(ijjjj).eq.chain(i)).and.(chaintwo(ijjjj).eq.chain(j))) THEN
-                           kij=kijcust(ijjjj)
+                     ELSE
+                        IF (otherchain(ijjjj)) THEN
+                           ! Wildcard residue, but no wildcard chain -> check chain
+                           IF ((chaintwo(ijjjj).eq.chain(i)).and.(chaintwo(ijjjj).eq.chain(j))) THEN
+                              kij=kijcust(ijjjj)
+                           END IF
                         
                         ! Wildcard both residue and chain
                         ELSE
                            kij=kijcust(ijjjj)
+                     
                         END IF
 
                      END IF
