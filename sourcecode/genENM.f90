@@ -12,7 +12,8 @@ PROGRAM genENM
   INTEGER :: natom, io, i, j, natomold, nident, ncusres,ii,ijjjj,iseed,jat,jj, &
        ll,nntr,nnzero,nhel,nshe,k,l,fat,cbs,cbnum,nseconds
   REAL(DP) :: cutoff, cutoffdef, rave, rdev, rmin, rmax,anmp,ddf,rkh,dist,dist2,dmax,dmin, &
-       distave,drms,kij,kset,shift,rx,ry,rz,trace,random,masstol,xav,yav,zav,bfacav,entot
+       distave,drms,kij,kset,shift,rx,ry,rz,trace,random,masstol,xav,yav,zav,bfacav,entot, &
+       spring_radius
   LOGICAL,ALLOCATABLE,DIMENSION(:) :: otherres
   INTEGER,ALLOCATABLE,DIMENSION(:) :: atnum,resnum,resnumold, resone, restwo
   REAL(DP),ALLOCATABLE,DIMENSION(:) :: x,y,z,occ,bfac,vals,mass,massold,cutvalue, &
