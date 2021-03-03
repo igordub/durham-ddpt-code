@@ -668,7 +668,6 @@ PROGRAM genENM
   WRITE(7433,'(A)') '# Visualization of the Elastic Network with sticks'
   WRITE(7433,'(A)') 'cmd.bg_color("white")'
   WRITE(7433,'(A)') 'cmd.load("CAonly.pdb", "ENM")' ! Load CAonly as 'enm'
-  WRITE(7433,'(A)') 'cmd.set_bond("stick_color", "black", "ENM")'
   WRITE(7433,'(A)') 'cmd.unbond("ENM","ENM")' ! In case CAonly.pdb contains `CONECT` records
 
   OPEN(file='matrix.sdijf',form='FORMATTED',unit=9432)
@@ -860,6 +859,9 @@ PROGRAM genENM
   CLOSE(7432)
   
   ! Close ENM.pml file
+  WRITE(7433,'(A)') 'cmd.set_bond("stick_color", "black", "ENM")'
+  WRITE(7433,'(A)') 'cmd.show_as("sticks", "ENM")'
+  WRITE(7433,'(A)') 'cmd.show("spheres", "ENM")'
   CLOSE(7433)
 
   WRITE(6,'(/A,F8.4,A)')' The matrix is ', 100.d0*dfloat(nnzero)/dfloat(3*natom*(3*natom+1)/2),' % Filled.'
