@@ -6,13 +6,14 @@ PROGRAM genENM
   USE foul
   IMPLICIT NONE
   LOGICAL :: getoption, hetatm, caonly, resmass, atmass, cutvect,cutassign, &
-       forceres,ukn,usesec,qexist,lig1,firstat, custb, dna, hin, is_numeric
-  CHARACTER :: dummy*120, pdbfile*120, lign80*80, nomatm*120, res2*4, chain2*1, nomres*120, &
-       foutname*120,custbfile*120
+       forceres,ukn,usesec,qexist,lig1,firstat, custb, dna, hin, is_numeric 
+  CHARACTER :: dummy*120, pdbfile*120, lign80*80, nomatm*120, res2*4, nomres*120, &
+       foutname*120,custbfile*120, dummy_i*5, dummy_j*5
   INTEGER :: natom, io, i, j, natomold, nident, ncusres,ii,ijjjj,iseed,jat,jj, &
-       ll,nntr,nnzero,nhel,nshe,k,l,fat,cbs,cbnum,nseconds,counter_1,counter_2,counter_3,counter_4
+       ll,nntr,nnzero,nhel,nshe,k,l,fat,cbs,cbnum,nseconds
   REAL(DP) :: cutoff, cutoffdef, rave, rdev, rmin, rmax,anmp,ddf,rkh,dist,dist2,dmax,dmin, &
-       distave,drms,kij,kset,shift,rx,ry,rz,trace,random,masstol,xav,yav,zav,bfacav,entot, forcing_coef
+       distave,drms,kij,kset,shift,rx,ry,rz,trace,random,masstol,xav,yav,zav,bfacav,entot,forcing_coef, &
+       spring_radius
   LOGICAL,ALLOCATABLE,DIMENSION(:) :: otherres, otherchain
   INTEGER,ALLOCATABLE,DIMENSION(:) :: atnum,resnum,resnumold, resone, restwo
   REAL(DP),ALLOCATABLE,DIMENSION(:) :: x,y,z,occ,bfac,vals,mass,massold,cutvalue, &
@@ -79,18 +80,7 @@ PROGRAM genENM
   ELSE
      cutoffdef=12
      WRITE(6,'(A/A)') "Cut off set to 12 A","Assign with -c if a different value is needed"
-  END IF
- !-----------------------------------------------------------------------------------
- ! Edit made to allow for BENM in ddpt 
-  IF (getoption('-back',.true.,dummy)) THEN
-     IF (is_numeric(dummy(1:1))) THEN
-       READ(dummy,*) forcing_coef
-     ELSE
-        STOP "The Forcing Coefficient Between Adjacent Alpha Carbons Must Be a Number"
-     END IF 
-  ELSE 
-     forcing_coef = 1
-  END IF
+  END IF 
 
   IF (getoption('-ccust',.true.,nomatm)) THEN
      cutvect=.true.
@@ -546,8 +536,7 @@ PROGRAM genENM
       ALLOCATE(chaintwo(ncusres))
       ALLOCATE(kijcust(ncusres))
       ALLOCATE(otherres(ncusres))
-      ALLOCATE(otherchain(ncusres))
-
+      
       REWIND(5699)
 
       ncusres=0
@@ -563,9 +552,9 @@ PROGRAM genENM
          ELSE
             ncusres=ncusres+1
             READ(lign80,'(1X,I4,1X,A1,1X,A4,1X,A1,1X,F8.3)') resone(ncusres), chainone(ncusres), res2, &
-                 chain2, kijcust(ncusres)
+                 chaintwo(ncusres), kijcust(ncusres)
             WRITE(6,'(1X,I4,1X,A1,1X,A4,1X,A1,1X,F8.3)') resone(ncusres), chainone(ncusres), res2, &
-                 chain2, kijcust(ncusres)
+                 chaintwo(ncusres), kijcust(ncusres)
 
             IF (index(res2,"*").gt.0) THEN
                otherres(ncusres)=.false.
@@ -574,15 +563,6 @@ PROGRAM genENM
                otherres(ncusres)=.true.
                READ(res2,'(I4)') restwo(ncusres)
             END IF
-
-	         IF (index(chain2,"*").gt.0) THEN
-               otherchain(ncusres)=.false.
-               chaintwo(ncusres)= "*"
-            ELSE
-               otherchain(ncusres)=.true.
-               READ(chain2,'(A1)') chaintwo(ncusres)
-            END IF
-
             
          END IF
 
@@ -647,7 +627,7 @@ PROGRAM genENM
      
      WRITE(6,'(A)') "Read in custom springs"
   END IF
-  
+
 ! End of reading custom bonds
 !-----------------------------------------------------------------------------------------
 
@@ -681,6 +661,15 @@ PROGRAM genENM
   WRITE(7432,'(A)') 'mol new'
   WRITE(7432,'(A)') 'draw color black'
 
+  ! Write PyMOL script for ENM visualization
+  OPEN(file='ENM.pml',form='FORMATTED',unit=7433)
+
+  WRITE(7433,'(A)') '# PyMOL script'
+  WRITE(7433,'(A)') '# Visualization of the Elastic Network with sticks'
+  WRITE(7433,'(A)') 'cmd.bg_color("white")'
+  WRITE(7433,'(A)') 'cmd.load("CAonly.pdb", "ENM")' ! Load CAonly as 'enm'
+  WRITE(7433,'(A)') 'cmd.unbond("ENM","ENM")' ! In case CAonly.pdb contains `CONECT` records
+
   OPEN(file='matrix.sdijf',form='FORMATTED',unit=9432)
 
   trace=0.d0
@@ -692,7 +681,8 @@ PROGRAM genENM
   nntr=0
   ll=0
   entot=0.d0
-     DO i=1,natom
+
+  DO i=1,natom
      ii=3*i-2
 
      DO j=1,3*natom
@@ -712,35 +702,19 @@ PROGRAM genENM
               DO ijjjj=1,ncusres
                  IF (((resone(ijjjj).eq.resnum(i)).and.(chainone(ijjjj).eq.chain(i))) &
                     .or.((resone(ijjjj).eq.resnum(j)).and.(chainone(ijjjj).eq.chain(j)))) THEN
-           !------------------------------------------------------------------------------------
-	   ! Edit made to allow for wildcard chain in DDPT TEST FOR GITHUB SYNC
-                    IF (otherres(ijjjj) .and. (otherchain(ijjjj))) THEN
-	               IF (((restwo(ijjjj).eq.resnum(i)).and.(chaintwo(ijjjj).eq.chain(i))) &
-                       .or.((restwo(ijjjj).eq.resnum(j)).and.(chaintwo(ijjjj).eq.chain(j)))) THEN
+                    IF (otherres(ijjjj)) THEN
+                       IF (((restwo(ijjjj).eq.resnum(i)).and.(chaintwo(ijjjj).eq.chain(i))) &
+                            .or.((restwo(ijjjj).eq.resnum(j)).and.(chaintwo(ijjjj).eq.chain(j)))) THEN
                           kij=kijcust(ijjjj)
-		       END IF
-		    ELSE IF (otherres(ijjjj) .and. (.not. otherchain(ijjjj))) THEN
-                       IF ((restwo(ijjjj) .eq. resnum(i)) .or. (restwo(ijjjj) .eq. resnum(j))) THEN         
-		          kij=kijcust(ijjjj)
                        END IF
-		    ELSE IF((.not. (otherres(ijjjj))) .and. otherchain(ijjjj)) THEN
-                       IF (chain(i) .eq. chain(j)) THEN
-                           kij=kijcust(ijjjj)
-		       END IF
-                    ELSE IF ((.not. (otherchain(ijjjj)) .and. (.not. (otherres(ijjjj))))) THEN
-	               kij=kijcust(ijjjj)
-		    END IF
-                  END IF
-	   !-------------------------------------------------------------------------------------- 
-               END DO
+                    ELSE
+                       kij=kijcust(ijjjj)
+                    END IF
+                 END IF
+              END DO
            END IF
            !-------------------------------------------------------------------
-           !-----------------------------------------------------------------------------------
-           ! Implementing BENM in ddpt
-           IF (abs(i-j) ==1)THEN
-             kij = kij * forcing_coef
-           END IF
-            
+
            rx=x(i)-x(j)
            ry=y(i)-y(j)
            rz=z(i)-z(j)
@@ -786,9 +760,24 @@ PROGRAM genENM
 
               ll=ll+1
               IF (j.gt.i) THEN
+                 ! VMD
                  WRITE(7432,'(A,3F12.4,A,3F12.4,A)') 'draw line {',x(i),y(i),z(i),'} {',x(j),y(j),z(j),'}'
+                 ! PyMOL
+                 WRITE(dummy_i, '(I5)') i
+                 WRITE(dummy_j, '(I5)') j
+                 spring_radius=SQRT(kij/kset)*0.1 ! Default EN spring radius is 0.1
+                 ! Write a bond
+                 WRITE(7433,'(A,2A,AI4,2A,AI4,A)') &
+                 'cmd.bond(','"c. ',chain(i),' and i. ',resnum(i), &
+                 '", "c. ',chain(j),' and i. ',resnum(j),'")'
+                 ! Set stick radius for the bond
+                 WRITE(7433,'(A,F5.3,2A,AI4,2A,AI4,A)') &
+                 'cmd.set_bond("stick_radius", ',spring_radius, &
+                 ', "c. ',chain(i),' and i. ',resnum(i),&
+                 '", "c. ',chain(j),' and i. ',resnum(j),'")'
               END IF
               
+
               IF (ll.eq.1.or.dist.lt.dmin) dmin=dist
               IF (ll.eq.1.or.dist.gt.dmax) dmax=dist
               
@@ -869,6 +858,14 @@ PROGRAM genENM
   WRITE(7432,'(2A)') 'mol load pdb ',pdbfile
   CLOSE(7432)
   
+  ! Close ENM.pml file
+  WRITE(7433,'(A)') 'cmd.set_bond("stick_color", "black", "ENM")'
+  WRITE(7433,'(A)') 'cmd.show_as("sticks", "ENM")'
+  WRITE(7433,'(A)') 'cmd.show("spheres", "ENM")'
+  WRITE(7433,'(A)') 'cmd.set("sphere_scale", 0.8, "ENM")'
+  WRITE(7433,'(A)') 'cmd.orient("ENM")'
+  CLOSE(7433)
+
   WRITE(6,'(/A,F8.4,A)')' The matrix is ', 100.d0*dfloat(nnzero)/dfloat(3*natom*(3*natom+1)/2),' % Filled.'
   WRITE(6,'(I12,A)') nnzero,'  non-zero elements.'
   distave=distave/float(ll)
@@ -893,6 +890,8 @@ PROGRAM genENM
         EXIT
      END IF
   END DO
+
+
 END PROGRAM genENM
 
 FUNCTION RANDOM(ISEED)
@@ -934,10 +933,10 @@ SUBROUTINE helptext(iunit)
   IMPLICIT NONE
   INTEGER :: iunit
   WRITE(iunit,'(A)')"                           G  e  n  E  N  M  M                           "
-  WRITE(iunit,'(A)')"                               VERSION 1.1                               "
+  WRITE(iunit,'(A)')"                               VERSION 1.0                               "
   WRITE(iunit,'(A)')"                                                                         "  
   WRITE(iunit,'(A)')"                               Written by:                               "
-  WRITE(iunit,'(A)')"               Tom Rodgers, David Burnell and Charlie Heaton             "
+  WRITE(iunit,'(A)')"                      Tom Rodgers and David Burnell                      "
   WRITE(iunit,'(A)')"                                                                         "
   WRITE(iunit,'(A)')"This program produces the Hermitian matrix for a ENM based on the pdb    "
   WRITE(iunit,'(A)')"inputed with -pdb. A matrix.sdijf file is produced which can be          "
@@ -950,7 +949,6 @@ SUBROUTINE helptext(iunit)
   WRITE(iunit,'(A)')"             genENM -pdb pdbfile [-c cut-off] [-f force] [-ccust cfile]  "
   WRITE(iunit,'(A)')"                    [-fcust ffile] [-spcust spfile] [-mass] [-ca]        "
   WRITE(iunit,'(A)')"                    [-lig1] [-res] [-het] [-hin] [-hine h] [-an p]       " 
-  WRITE(iunit,'(A)')"                    [-back b]                                            " 
   WRITE(iunit,'(A)')"                                                                         "
   WRITE(iunit,'(A)')"Option    Type       Value       Description                             "
   WRITE(iunit,'(A)')"------------------------------------------------------------             "
@@ -974,10 +972,7 @@ SUBROUTINE helptext(iunit)
   WRITE(iunit,'(A)')"                                 instead, h is the decay factor          "
   WRITE(iunit,'(A)')"  -an      Input,Opt             Uses anisotropic interactions instead,  "
   WRITE(iunit,'(A)')"                                 p is the order of the power decay       "
-  WRITE(iunit,'(A)')"  -back    Input,Opt             Strengthens backbone CA atoms by a      "
-  WRITE(iunit,'(A)')"                                 factor of b                             "
-  WRITE(iunit,'(A)')"  -dna     Opt                   Reads pdbs that contain DNA, includes   "
-  WRITE(iunit,'(A)')"  -dna     Opt                   C4 and C1' atoms if -ca is used         "
+  WRITE(iunit,'(A)')"                                                                         "
   WRITE(iunit,'(A)')"                                                                         "
   WRITE(iunit,'(A)')" cfile format:                                                           "
   WRITE(iunit,'(A)')"       WRITE(cfile,'(A4,1X,F7.3)') atomname, cutoff                      "
