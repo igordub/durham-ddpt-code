@@ -708,7 +708,9 @@ PROGRAM genENM
                           kij=kijcust(ijjjj)
                        END IF
                     ELSE
+                     IF ((chaintwo(ijjjj).eq.chain(i)).and.(chaintwo(ijjjj).eq.chain(j))) THEN
                        kij=kijcust(ijjjj)
+                     END IF
                     END IF
                  END IF
               END DO
