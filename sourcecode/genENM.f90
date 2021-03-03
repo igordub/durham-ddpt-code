@@ -663,10 +663,12 @@ PROGRAM genENM
   ! Write PyMOL script for ENM visualization
   OPEN(file='ENM.pml',form='FORMATTED',unit=7433)
 
-  WRITE(7433,'(A)') '# Script for PyMOL'
-  WRITE(7433,'(A)') '# Visualization of the Elastic Network with cyliders'
+  WRITE(7433,'(A)') '# PyMOL script'
+  WRITE(7433,'(A)') '# Visualization of the Elastic Network with sticks'
   WRITE(7433,'(A)') 'cmd.bg_color("white")'
-  WRITE(7433,'(A)') 'r1,g1,b1 = 0,0,0 # color (black)'
+  WRITE(7433,'(A)') 'cmd.load("CAonly.pdb", "ENM")' ! Load CAonly as 'enm'
+  WRITE(7433,'(A)') 'cmd.set_bond("stick_color", "black", "ENM")'
+  WRITE(7433,'(A)') 'cmd.unbond("ENM","ENM")' ! In case CAonly.pdb contains `CONECT` records
 
   OPEN(file='matrix.sdijf',form='FORMATTED',unit=9432)
 
@@ -764,11 +766,18 @@ PROGRAM genENM
                  WRITE(dummy_i, '(I5)') i
                  WRITE(dummy_j, '(I5)') j
                  spring_radius=SQRT(kij/kset)*0.1 ! Default EN spring radius is 0.1
-                 WRITE(7433,'(6AF12.4,A,F5.3,5A)') &
-                 'cmd.load_cgo([ 9.0,',x(i),',',y(i),',',z(i),',',x(j),',',y(j),',',z(j), &
-                 ', ',spring_radius,', r1, g1, b1, r1, g1, b1 ], "',TRIM(ADJUSTL(dummy_i)),'_',TRIM(ADJUSTL(dummy_j)),'")'
+                 ! Write a bond
+                 WRITE(7433,'(A,2AAAI4,A)') &
+                 'cmd.bond(','"c. ',chain(i),' and i. ',resnum(i), &
+                 '", c. ',chain(j),' and i. ',resnum(j),'")'
+                 ! Set stick radius for the bond
+                 WRITE(7433,'(A,F5.3,2AAAI4,A)') &
+                 'cmd.set_bond("stick_radius", ',spring_radius, &
+                 ', "c. ',chain(i),' and i. ',resnum(i),&
+                 '", c. ',chain(j),' and i. ',resnum(j),'")'
               END IF
               
+
               IF (ll.eq.1.or.dist.lt.dmin) dmin=dist
               IF (ll.eq.1.or.dist.gt.dmax) dmax=dist
               
@@ -850,8 +859,6 @@ PROGRAM genENM
   CLOSE(7432)
   
   ! Close ENM.pml file
-  WRITE(7433,'(A)') 'cmd.group("ENM", "*")'
-  WRITE(7433,'(A)') 'cmd.load("CAonly.pdb")'
   CLOSE(7433)
 
   WRITE(6,'(/A,F8.4,A)')' The matrix is ', 100.d0*dfloat(nnzero)/dfloat(3*natom*(3*natom+1)/2),' % Filled.'
