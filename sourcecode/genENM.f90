@@ -862,6 +862,7 @@ PROGRAM genENM
   WRITE(7433,'(A)') 'cmd.set_bond("stick_color", "black", "ENM")'
   WRITE(7433,'(A)') 'cmd.show_as("sticks", "ENM")'
   WRITE(7433,'(A)') 'cmd.show("spheres", "ENM")'
+  WRITE(7433,'(A)') 'cmd.orient("ENM")'
   CLOSE(7433)
 
   WRITE(6,'(/A,F8.4,A)')' The matrix is ', 100.d0*dfloat(nnzero)/dfloat(3*natom*(3*natom+1)/2),' % Filled.'
