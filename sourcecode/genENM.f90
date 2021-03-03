@@ -768,14 +768,14 @@ PROGRAM genENM
                  WRITE(dummy_j, '(I5)') j
                  spring_radius=SQRT(kij/kset)*0.1 ! Default EN spring radius is 0.1
                  ! Write a bond
-                 WRITE(7433,'(A,2AAAI4,A)') &
+                 WRITE(7433,'(A,2A,AI4,2A,AI4,A)') &
                  'cmd.bond(','"c. ',chain(i),' and i. ',resnum(i), &
-                 '", c. ',chain(j),' and i. ',resnum(j),'")'
+                 '", "c. ',chain(j),' and i. ',resnum(j),'")'
                  ! Set stick radius for the bond
-                 WRITE(7433,'(A,F5.3,2AAAI4,A)') &
+                 WRITE(7433,'(A,F5.3,2A,AI4,2A,AI4,A)') &
                  'cmd.set_bond("stick_radius", ',spring_radius, &
                  ', "c. ',chain(i),' and i. ',resnum(i),&
-                 '", c. ',chain(j),' and i. ',resnum(j),'")'
+                 '", "c. ',chain(j),' and i. ',resnum(j),'")'
               END IF
               
 
