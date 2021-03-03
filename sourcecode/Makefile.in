@@ -17,7 +17,7 @@ INS=@prefix@
 ##########################################################################
 
 
-makefull:	ENM diagstd diagrtb diagval GNM freq nmwiz cross_cor rms overlap \
+makefull:	ENM diagstd diagrtb GNM freq nmwiz cross_cor rms overlap \
 		GroAMED plotpdb covar fullca domains project \
 		eigen pdb_diff spacing movement trajpdb clean
 		@echo "Full Toolbox built"
@@ -49,12 +49,6 @@ diagrtb:
 		./sourcecode/diagrtb.f90 \
 		-o ./bin/${PREFIX}DIAGRTB${SUFFIX}
 		@echo "Built D  I  A  G  R  T  B"
-
-diagval:	
-		@${COMPILER} ./sourcecode/types.f90 ./sourcecode/utils.f90 \
-		./sourcecode/write_files.f90 ./sourcecode/diagval.f90 \
-		-o ./bin/${PREFIX}DIAGVAL${SUFFIX}
-		@echo "Built D  I  A  G  V  A  L"
 
 GNM:            
 		@${COMPILER} ./sourcecode/types.f90 ./sourcecode/read_files.f90 \
@@ -175,4 +169,3 @@ veryclean:	clean
 
 ##########################################################################
 #Tom Rodgers 28-09-2011
-#Igors Dubanevics 19-11-2020
